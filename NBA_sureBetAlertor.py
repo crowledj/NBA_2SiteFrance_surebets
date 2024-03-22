@@ -65,14 +65,7 @@ surebet_factor = 1.0
 odd_are_found = False
 TEST_MODE = False
 
-#client = ScraperAPIClient('781fa06f6c29968fe2971fa6a90760dc')
-#respondsr = client.get(url = "https://france-pari.fr/")
-#print(result)
-#text file with records of surebets already alerted for:
-
-# if not TEST_MODE:
-#     surebets_Done_list_textfile = './sure_bets_placed.txt'
-#     fp1 = open(surebets_Done_list_textfile, "r")
+DEBUG_PRINTS=True
 
 list_mailed_surebets = []
 
@@ -124,7 +117,6 @@ def return_surebet_vals(*argv, stake):  #odds_A, odds_B,stake):
     surebetStakes = []
 
     # !! NoTE : ive added a '100.0' factor into the calculations below to display to the lads in their emails
-
     for i,odds in enumerate(argv):
 
         if odds == 0.0 or surebet_factor == 0.0 :
@@ -143,8 +135,6 @@ options = Options()
 options.headless =  False #True
 #options.LogLevel = False
 options.add_argument("--window-size=1920,1200")
-#options.add_argument("--LogLevel=0")
-#options.add_argument("user-agent= 'Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41' ")
 options.add_argument("user-agent= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_6) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.698.0 Safari/534.24'")
 #driver = webdriver.Chrome(options=options) #, executable_path=DRIVER_PATH, service_args=["--verbose", "--log-path=D:\\qc1.log"])
 
@@ -177,16 +167,6 @@ def check_for_sure_bets(*args):
     total_time_parsing = 0.0
     globCounter=0
     dataDictChangdCounter = 0
-    # RAND_PROXY_JUMP = 3
-
-    # compettitions =  [ north_murica_links, all_premier_league_sites] #websites_ligue1_links]
-    # #else:
-    # sports =  ['soccer']
-    # if  input_sports:
-    #     sports = input_sports    
-
-    # if  input_competitions: 
-    #     compettitions =  input_competitions  
 
     while(True):
 
@@ -286,18 +266,15 @@ def check_for_sure_bets(*args):
                 #filter unique games across dicts/sites using the key from a fixed one ....  
                 #                
                 subsetList = list(subset)         
-                #print('combination ' + str(index) + '  -- has ordered bookies as  -- ' + str(subsetList)) 
                 index += 1 
 
                 if ( len(subsetList) >= 2):
                     second_bookie_keys = subsetList[1].keys() 
                     third_bookie_keys  = subsetList[2].keys()         
 
-                #local_bookies_list = []
                 bookie_2 = ''
                 for keys in second_bookie_keys:
                     bookie_2 = keys.split('_')[0]
-                    #local_bookies_list.append(bookie_2)
                     break   
 
                 if len(subsetList) >= 2:    
@@ -324,12 +301,9 @@ def check_for_sure_bets(*args):
 
                             if len(sub_key_str_split_by_works) >= 2:
                                 teamA_1 =  sub_key_str_split_by_works[0]
-                                teamB_1 =  sub_key_str_split_by_works[1]
+                                teamB_1 =  sub_key_str_split_by_works[1]       
 
-                        #if bookie_1 == betclic and bookie_2 == winimax and bookie_3 == 'paris-sportifs.pmu':
-                        #    print('team A and team B are: ->' + str(teamA_1) + '<-  ->' + str(teamB_1) + '<-')        
-
-                        unique_math_identifiers = [competition_1,teamA_1,teamB_1]   # [date_1,competition_1,teamA_1,teamB_1]
+                        unique_math_identifiers = [competition_1,teamA_1,teamB_1]
 
                         if DEBUG_OUTPUT :
                             print('site_data key = ' + str(key) )
@@ -340,32 +314,12 @@ def check_for_sure_bets(*args):
                         truth_list_subStrKeysDict2 = [matching_keys2_list.append(key2) for key2,val in subsetList[1].items() if (unique_math_identifiers[0] in key2 and unique_math_identifiers[1] in key2 and unique_math_identifiers[2] in key2)]
 
                         if len(truth_list_subStrKeysDict2) > 0:
-                            key_bookkie2 = matching_keys2_list[0] #truth_list_subStrKeysDict2[0]
-    
-
-                        #print(' Bookies 1 is ' + str(bookie_1) + ' Bookies 2 is ' + str(bookie_2) + ' -- and bookie_3 is ' + str(bookie_3)) 
-                        #print(' teams  are : ->' + str(teamA_1) +  '<-  and  ->' + str(teamB_1) + '<-')
-                        #print('keys, in order, are : ->' + str(key) + '<-,  ->' + str(key_bookkie2) + '<-,  ->' + str(key_bookkie3) + '<-')        
-                        ## check i stest for now here... !! re - undo former statement test after    
+                            key_bookkie2 = matching_keys2_list[0]
+   
                         if (truth_list_subStrKeysDict2 and not (find_substring(bookie_1,bookie_2) )):
                             
                             checxking_surebet_counts += 6
-                            #print('Checking for surebets -- idir teams : ' + str(teamA_1) +  '  and  ' + str(teamB_1)   + '.... checking_surebet_counts =  ' + str(checxking_surebet_counts)) 
-                            #print('Bookies in order of odds are : ' + bookie_1  + bookie_2 + bookie_3 + '\n')
-                            
-                            #test for mail with %s -- this ensures a surebet is found !;)
-                            #subsetList[0][key][0],subsetList[1][key_bookkie2][1],subsetList[2][key_bookkie3][2] = 1.1,7.5,25     #8.0, 2.0, 4.0
-                            #subsetList[0][key][0],subsetList[1][key_bookkie2][1],subsetList[2][key_bookkie3][2] = 15.1, 1.75, 2.5 
-
                             home_win_odds, away_win_odds = subsetList[0][key][0], subsetList[1][key_bookkie2][1]
-                            #print('\n \n')
-
-                            #print(' Bookies 1 is ' + str(bookie_1) + ' Bookies 2 is ' + str(bookie_2) + ' -- and bookie_3 is ' + str(bookie_3)) 
-                            #print(' teams  are : ->' + str(teamA_1) +  '<-  and  ->' + str(teamB_1) + '<-')
-                            #print('keys, in order, are : ->' + str(key) + '<-,  ->' + str(key_bookkie2) + '<-,  ->' + str(key_bookkie3) + '<-')  
-
-                            #print('home_win_odds = ' + str(home_win_odds) + ', draw_odds = ' +  str(draw_odds) + ' and away_win_odds = ' + str(away_win_odds))
-
                             #print('\n \n')
 
                             if  check_is_surebet(home_win_odds, away_win_odds):  # encode bookie outcomes as 'W','D','L' wrt to the 1st team in the match descrpt. , i.e The 'hometeam' 
@@ -375,12 +329,7 @@ def check_for_sure_bets(*args):
                                 print('***********************************************************************************************************************************************************************************')   
                                 print('*****************************************************************************  SURE BET FOUND !  :)   *****************************************************************************')   
                                 print('***********************************************************************************************************************************************************************************')   
-                                #     #surebet_odds_list = [subsetList[0][key][0],subsetList[1][key_bookkie2][1],subsetList[2][key_bookkie3][2]]                                 
-                                #     #get_surebet_factor(surebet_odds_list) #  odds_A, odds_B):
-                                #     #sure_betsto_place = return_surebet_vals(surebet_odds_list, stake_val)
-                                #     send_mail_alert_gen_socer_surebet(bookie_1, bookie_2 ,bookie_3,W_1,D,teamA_1,teamB_1, date,competition_1,sure_betsto_place)
-                                # else:      
-                                #     send_mail_alert_gen_socer_surebet(bookie_1, bookie_2 ,bookie_3,W_1,D,teamA_1,teamB_1, date,competition_1)
+
                                 print('Odds comboo is')
                                 print(W_1)
                                 print(D)
@@ -392,22 +341,13 @@ def check_for_sure_bets(*args):
                                     actual_profit = (stake)/surebet_factor
                                 else:
                                     actual_profit = 100.0                                   
-                                ## calc. % profit for the lads:
-                                #profit = 1.0 - (1/subsetList[0][key][0] + 1/subsetList[1][key_bookkie2][1] + 1/subsetList[2][key_bookkie3][2]) 
-                                #184 45238262
-                                #get_surebet_factor(subsetList[0][key][0],subsetList[1][key_bookkie2][1],subsetList[2][key_bookkie3][2])
+
                                 proportionsABC_list =  return_surebet_vals(home_win_odds, away_win_odds,stake = stake)
 
-                                #avg_profit = round(stake*(-subsetList[0][key][0]*proportionsABC_list[0]  + subsetList[1][key_bookkie2][1]*proportionsABC_list[1] + subsetList[2][key_bookkie3][2]*proportionsABC_list[2]),3)
-                                #profit_2 = round(stake*( subsetList[0][key][0]*proportionsABC_list[0]  - subsetList[1][key_bookkie2][1]*proportionsABC_list[1] + subsetList[2][key_bookkie3][2]*proportionsABC_list[2]),3)
-                                #profit_3 = round(stake*( subsetList[0][key][0]*proportionsABC_list[0]  + subsetList[1][key_bookkie2][1]*proportionsABC_list[1] - subsetList[2][key_bookkie3][2]*proportionsABC_list[2]),3)
-                                #avg_profit = round((1/3)*(profit_1 + profit_2 + profit_3),3)
 
                                 proportionsABC_listRnd = [round(x,4) for x in proportionsABC_list]
                                 send_mail_alert_gen_socer_surebet_prportions(bookie_1, bookie_2 ,bookie_3,W_1,D,teamA_1,teamB_1, date,competition_1,proportionsABC_listRnd, actual_profit, home_win_odds, draw_odds, away_win_odds)
-                                #print('Bet (sure)  kombo just found has the wining home teams odds at ' + str(subsetList[0][key][0]) + 'in the bookie ->' + bookie_1 + ' the draw at odds = '  + str(subsetList[1][key_bookkie2][1]) + ' in bookie ' + str(bookie_2) + ' and finally the other teams win odds @ ' + str(subsetList[2][key_bookkie3][2]) + str(bookie_3) + '  \n')
-                                # these continues will avoid the sitch of 'same' surebet (swapoed one) being mailed out
-                                #return_surebet_vals([subsetList[0][key][0],subsetList[1][key_bookkie2][1],subsetList[2][key_bookkie3][2]],1000)
+
                                 continue
 
                             home_win_odds, away_win_odds = subsetList[0][key][0], subsetList[1][key_bookkie2][2]
@@ -443,12 +383,6 @@ def check_for_sure_bets(*args):
             print("Time taken to just check for surebets besides parsing = " + str(end_surebet_timer - start_surebet_timer))
 
     return True
-
-## TODO :
-# def try_catch_function():
-#     exceptionBool = False
-
-#     return exceptionBool
 
 #if only soing 2 - way sure bet , then oddDraw can be set to -1 and used as such when read in here
 def send_mail_alert_odds_thresh(win_lose_or_draw,expect_oddB,actualOdd,teamA,teamB,date,competition,bookiesNameEventB):
@@ -517,10 +451,6 @@ def send_mail_alert_odds_thresh(win_lose_or_draw,expect_oddB,actualOdd,teamA,tea
         smtpObj = smtplib.SMTP_SSL("smtp.gmail.com",465)
         smtpObj.login("godlikester@gmail.com", "Pollgorm1")
         smtpObj.sendmail(sender, receivers, message)     
-        
-        # Fp1 = open(surebets_Done_list_textfile,'a')
-        # Fp1.write(message + '  ' + date + '\n')
-        # Fp1.close()
 
         if DEBUG_OUTPUT :
             print("Successfully sent email")
@@ -765,13 +695,6 @@ def parseSites(driver): #, input_sports, input_competitions ):
     nba_teams_dict.update({'atlanta':'atlanta hawks','boston':'boston celtics','brooklyn':'brooklyn nets','charlotte':'charlotte hornets','chicago':'chicago bulls','cleveland':'cleveland cavaliers','dallas':'dallas mavericks','denver':'denver nuggets','detroit':'detroit pistons','golden state':'golden state warriors','houston':'houston rockets','indiana':'indiana pacers','los angeles':'los angeles lakers','memphis':'memphis grizzlies','miami':'miami heat','milwaukee':'milwaukee bucks','minnesota':'minnesota timberwolves','new orleans':'new orleans pelicans','new york':'new york knicks','oklahoma':'oklahoma city thunder','orlando':'orlando magic','philadelphia':'philadelphia 76ers','phoenix':'phoenix suns','portland':'portland trail blazers','sacramento':'sacramento kings','san antonio':'san antonio spurs','toronto':'toronto raptors','utah':'utah jazz','washington':'washington wizards'})
 
     combined_leagues_maping = nba_teams_dict
-    # combined_leagues_maping.update( comon_TeamNames_mapper )
-    # combined_leagues_maping.update( EPL_commonName_mapping )
-    # combined_leagues_maping.update( xtra_champ_league_maping )
-    # combined_leagues_maping.update( la_Liga_commonName_mapping )
-    # combined_leagues_maping.update( comon_team_maping_europa )
-    # combined_leagues_maping.update( serie_a_commonName_mapping )
-    # combined_leagues_maping.update( bundesliga_commonName_mapping )
 
     team_names_maping = combined_leagues_maping
     print('team_names_maping = ' + str(team_names_maping))
@@ -781,13 +704,10 @@ def parseSites(driver): #, input_sports, input_competitions ):
     try:
         print('trying the driver.get on the new link....')
         driver.get(site_betclci_NBA_link)
-        #reset the boolean after going to the new link
-        #do_driver_link_get = False
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = True
         print("Error  caught in your BETCLIC initial website link .get.  --  retrying in while (true) inf loop :( .....")
-        #continue
 
     if any_errors:
         while any_errors:
@@ -804,7 +724,6 @@ def parseSites(driver): #, input_sports, input_competitions ):
     # grab the day/month/.year from today's date and store it
     todays_date = str(datetime.datetime.today()).split()[0] 
     date_time = str(datetime.datetime.today())
-    #driver.refresh()
 
     comparison_substr = ' '
     try:
@@ -815,16 +734,14 @@ def parseSites(driver): #, input_sports, input_competitions ):
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = True
-        print("Error  caught in your BETCLIC final rpound detect. func.  -- initial list games frabber  :( .....")
-        #continue       
+        print("Error  caught in your BETCLIC final rpound detect. func.  -- initial list games frabber  :( .....")  
 
     try:
         html = BeautifulSoup(driver.page_source,"html.parser")
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = True
-        print("Error  getting the  html.parser:( .....")
-        #continue              
+        print("Error  getting the  html.parser:( .....")            
 
     try:
 
@@ -835,8 +752,7 @@ def parseSites(driver): #, input_sports, input_competitions ):
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = True
-        print("Error  getting the inner element from the initial html:( .....")
-        #continue              
+        print("Error  getting the inner element from the initial html:( .....")          
         
     try:
         for panel_ in non_live_panels:
@@ -919,15 +835,12 @@ def parseSites(driver): #, input_sports, input_competitions ):
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = False
         print("Error getting the formatted  comparison string of the final match   :( .....")
-        #continue
 
-        #print('last_stripd_date_no_time_stmp = ' + str(last_stripd_date_no_time_stmp))
-        # Parsing Orbit - piwi247 website for NBA gamesz and odds next, 
-        # then we will compare the odds from the two sites and see if there are any surebets to be made
-        # then we will send an email alert to the user if there are any surebets to be made
-            
     try:
-        time.sleep(2)
+
+        x = random.randint(1, 3)
+        time.sleep(x)
+   
         driver.get(piwi_betfair_Basketball_link)
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
@@ -937,41 +850,50 @@ def parseSites(driver): #, input_sports, input_competitions ):
 
     if any_errors:
         while any_errors:
-            time.sleep(1)
+
+            y = random.randint(1, 3)
+            time.sleep(y)            
             any_errors = False
             try:    
                 driver.get(piwi_betfair_Basketball_link)
             except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
                 any_errors = True
-                print("Error  caught in your Piwi final round detect. func.  -- initial list games frabber  :( .....")
+                print("Error  caught in your Piwi -- getting connected to initial NBA link... :( .....")
                 continue
+
+    if DEBUG_PRINTS:
+        print(f"Connected to the piwi site but now -- grabbing the html of the site ...")    
+
     try:
-        time.sleep(2)
+        x = random.randint(1, 3)
+        time.sleep(x)
         html = BeautifulSoup(driver.page_source,"html.parser")
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = True
-        print("Error  getting the  html.parser:( .....")
+        print("Error  geconnecting to the piwi site imnitially with the driver.get() ( .....")
         #continue
 
+    if DEBUG_PRINTS:
+       print(f"GOT the html of the site successfully -- now going to try grab the rowContainers of the NBA matches  ...")    
+    
     nba_panels_via_html = None
     try:
         x = random.randint(1, 3)
         time.sleep(x)
-        #time.sleep(2)
         y = random.randint(1, 3)
         time.sleep(y)
-        
-        #innermost_element = html.find("app-desktop", class_="block").find("div",class_="layout").find("div",class_="layout_wrapper").find("bcdk-content-scroller", class_="content")        
-        #nba_games_panels= driver.find_elements("xpath","//*[@id='biab_body'/div[2]/main/div/div[3]/div/div/div/div[3]/div/div")
+  
         nba_panels_via_html = html.find_all("div", class_= "rowsContainer")
         time.sleep(1)
-        #check = 0
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = True
-        print("Error  getting the  inner elements inside the htam of PIWI - MUST FIIIXX !! ( .....")
+        print("Error  getting the  inner elements inside the html of PIWI - MUST FIIIXX !! ( .....")
         #continue
+
+    if DEBUG_PRINTS:
+        print(f"found html_rows and it = {nba_panels_via_html[-1].text}  ....")    
 
     found_NBA_panel = False
     nba_games_panel = None
@@ -981,15 +903,16 @@ def parseSites(driver): #, input_sports, input_competitions ):
         if 'In-Play' in panel.text or 'Starting soon' in panel.text:
             print('skippin the in play panel...')
             continue
+        
+        if DEBUG_PRINTS:
+            print("going thru at start of panels search after in play check ..panel by panel with i = " + str(i) + "  ....")
 
-        print("going thru at start of panels search..panel by panel with i = " + str(i) + "  ....")
         if found_NBA_panel:
             found_NBA_panel = False
             break
         
         if panel:
-            # #     nba_games_panel= panel.find_elements("xpath","//div")
-            # #     nba_game_info = nba_games_panel[0].text
+
             nba_game_info = panel.text
             if nba_game_info:
 
@@ -1001,6 +924,8 @@ def parseSites(driver): #, input_sports, input_competitions ):
                     else:
                         print("for the " + str(i) + " th panel -- no NBA panel found in the piwi247 website")
                         continue
+    if DEBUG_PRINTS:                
+        print("PAST  panels search after trying to assign 1st valid  and panel_index  = " + str(panel_index) + ", so now going through valid panels starting with this  ....")
 
     for k, panel_ in enumerate(nba_panels_via_html[panel_index:]):
         team_names_elment = []
@@ -1011,10 +936,12 @@ def parseSites(driver): #, input_sports, input_competitions ):
                 x = random.randint(1, 3)
                 time.sleep(x)
                 team_names_elment.append(match.find("div", class_="biab_market-title-cell styles_participantsNamesCell__kipAg").text)
-                print(team_names_elment[-1])
+                if DEBUG_PRINTS:
+                    print(f'debug print -- AFTER  getting team_names_elment .... and it =  {team_names_elment[-1]}  ....')
+                #print(team_names_elment[-1])
             except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
                 any_errors = True
-                print("Error  getting the first element inside the htam of PIWI - MU ( .....")
+                print("Error  getting the first element inside the html of PIWI  :( .....")
                 continue
 
             try:
@@ -1022,7 +949,13 @@ def parseSites(driver): #, input_sports, input_competitions ):
                 time.sleep(x)
                 x = random.randint(1, 3)
                 time.sleep(x)
+                if DEBUG_PRINTS:
+                    print(f'debug print -- at getting team_bets_elment_1   ....')
                 team_bets_elment_1 = match.find("div",class_="styles_betContent__wrapper__25jEo")
+
+                if DEBUG_PRINTS:
+                    print(f'debug print -- AFTER  getting team_bets_elment_1 ....') # and it = {team_bets_elment_1}  ....')
+
                 #print(team_bets_elment.text)
             except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
                 any_errors = True
@@ -1032,42 +965,31 @@ def parseSites(driver): #, input_sports, input_competitions ):
             try:
                 x = random.randint(1, 3)
                 time.sleep(x)
-                x = random.randint(1, 3)
-                time.sleep(x)
+                y = random.randint(1, 3)
+                time.sleep(y)
+       
+                z = random.randint(1, 2)
+                time.sleep(z)
+
+                if DEBUG_PRINTS:
+                    print(f'debug print -- at getting blue-odds...')
+
                 all_blue_odds = team_bets_elment_1.find_all("div", class_="styles_contents__Kf8LQ")
 
-                #all_odds_numbers_vert_panels = team_bets_elment_1.find_all("div", class_="betContentContainer styles_betContentContainer__Po5SR")
-                
-                # odds_vals_strs = []
-                # individ_odds_vals = []
-                # for j,oddpanel in enumerate(all_odds_numbers_vert_panels):
-                #     odds_vals_strs.append(oddpanel.find("div", class_="styles_contents__Kf8LQ"))
-
-                #    individ_odds_vals.append(odds_vals_strs[j].find("div", class_="biab_bet-content betContent styles_betContent__2QeRx"))
-
-                #><span class="styles_betOdds__bxapE betOdds">3.15</span><span class="biab_bet-amount betAmount styles_betAmount__QsYEs">4</span></div>
-
-                #data-selection-id="27665014" style="width: 50%;"><div class="styles_contents__Kf8LQ"><button data-cell-id="27665014" class="betContentCellMarket biab_bet styles_betContentCell__-gv8u biab_bet-content-cell biab_blue-cell biab_back-0 biab_bet-back back-cell"><span data-tooltip-id="tooltip" data-tooltip-html="This means you can <strong>bet for</strong> Union De Santa Fe to win at odds of 3.15 or greater." class="styles_tooltip__N52t4 cursor-help"><div class="biab_bet-content betContent styles_betContent__2QeRx"><span class="styles_betOdds__bxapE betOdds">3.15</span><span class="biab_bet-amount betAmount styles_betAmount__QsYEs">4</span></div></span></button></div><div class="styles_contents__Kf8LQ"><button data-cell-id="27665014" class="betContentCellMarket biab_bet styles_betContentCell__-gv8u biab_bet-content-cell biab_green-cell biab_lay-0 biab_bet-lay lay-cell"><span data-tooltip-id="tooltip" data-tooltip-html="This means you can <strong>bet against</strong> Union De Santa Fe to win at odds of 3.5 or greater." class="styles_tooltip__N52t4 cursor-help"><div class="biab_bet-content betContent styles_betContent__2QeRx"><span class="styles_betOdds__bxapE betOdds">3.5</span><span class="biab_bet-amount betAmount styles_betAmount__QsYEs">84</span></div></span></button></div></div>
-
-                # if len(all_blue_odds) > 1 :
-                #     if all_blue_odds[0].text == '':
-                #         all_blue_odds = team_bets_elment_1.find_all("div", class_="styles_contents__Kf8LQ")
-                #         #[0].find("button", class_="betContentCellMarket biab_bet styles_betContentCell__-gv8u biab_bet-content-cell biab_blue-cell biab_back-0 biab_bet-back back-cell" )
-                       
+                if DEBUG_PRINTS and len(all_blue_odds) >= 1:
+                    print(f'debug print -- AFTER getting bluereodds = {all_blue_odds[-1].text}  ....')
 
             except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
                 any_errors = True
                 print("Error  getting the THIRD element inside the htam of PIWI - MU ( .....")
                 continue
-  
-            # actual_odds = []
-            # for odd in odds_vals_strs:
-            #     actual_odds.append(odd.find("div", class_="biab_bet-content betContent styles_betContent__2QeRx"))
-            #                        #.find("span"))
-            #                        #.find("span").text)
 
             odd_home = -1.0
             odd_away = -1.0
+
+            if DEBUG_PRINTS:
+                print(f'debug print -- going through the  bluereodds& trying to get their text -- hence the odds  ....')
+
             try:
                 if all_blue_odds and len(all_blue_odds) >= 3:
                 # take care of the home odd
@@ -1077,6 +999,8 @@ def parseSites(driver): #, input_sports, input_competitions ):
                             odd_home = float(blue_odd_split_1[0] + '.' + blue_odd_split_1[1][:2])
                     if odd_home == -1.0:
                         continue
+                    else:
+                        print(f'odd_home = {odd_home}')
                     # for the away odd
                     blue_odd_split_2 = all_blue_odds[2].text.split('.')
                     if len(blue_odd_split_2) >=2:
@@ -1084,12 +1008,18 @@ def parseSites(driver): #, input_sports, input_competitions ):
                             odd_away = float(blue_odd_split_2[0] + '.' + blue_odd_split_2[1][:2])
                     if odd_away == -1.0:
                         continue
+                    else:
+                        print(f'odd_away_home = {odd_away}')                    
 
             except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException. IndexError) :
                 any_errors = True
                 print("Error  getting todds parsing in iw247 website - :( )")
                 continue
 
+            if DEBUG_PRINTS:
+                print(f'DONE  going through the  bluereodds and done  trying to get their text -- hence the odds = {str(odd_home)} -- {str(odd_away)} ....')
+                print(f'NOw filling the odds into the piwi dictionary ...')
+                
             try:
                 if len(team_names_elment) >= 1:
                     full_all_bookies_allLeagues_match_data[ 'piwi'  + '_' +  ' - ' + team_names_elment[-1]].append(odd_home) #= teamAWinOdds + '_' + draw_odds + '_' + teamBWinOdds
@@ -1102,7 +1032,10 @@ def parseSites(driver): #, input_sports, input_competitions ):
 
             except IndexError:
                 print('Error - index error in creating and inserting into the overall main dict. !! ')
-                continue 
+                continue
+
+            if DEBUG_PRINTS:
+                print(f'DONE filling the odds into the piwi dictionary and it = {str(full_all_bookies_allLeagues_match_data)} ...')
 
     # stop_mainParserTimer = time.time()
 
@@ -1112,18 +1045,6 @@ def parseSites(driver): #, input_sports, input_competitions ):
 
     unibet_dict      = defaultdict(list)
     piwi_dict        = defaultdict(list)
-    # betclic_dict     = defaultdict(list)
-    # winimax_dict     = defaultdict(list)
-    # zebet_dict       = defaultdict(list) 
-    # sports_bwin_dict = defaultdict(list)
-    # france_pari_dict = defaultdict(list)
-    # parionbet_dict   = defaultdict(list)
-    # cbet_dict        = defaultdict(list)
-    # pmu_dict         = defaultdict(list)
-
-
-
-
 
 
     if  check_is_surebet(home_win_odds, away_win_odds):  # encode bookie outcomes as 'W','D','L' wrt to the 1st team in the match descrpt. , i.e The 'hometeam' 
