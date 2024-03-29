@@ -87,7 +87,7 @@ def check_is_surebet(*args):
             total_iverse_odds_sum += 1/(odds)
 
     #
-    #print(' Surebet value = ' + str(total_iverse_odds_sum))
+    print(' Surebet value = ' + str(total_iverse_odds_sum))
 
     if total_iverse_odds_sum < 1.0 and total_iverse_odds_sum > 0.0:
         return True
@@ -134,7 +134,7 @@ def return_surebet_vals(*argv, stake):  #odds_A, odds_B,stake):
 DRIVER_PATH = 'chromedriver' #the path where you have "chromedriver" file.
 
 options = Options()
-options.headless =  False #True
+options.headless =  True
 #options.LogLevel = False
 options.add_argument("--window-size=1920,1200")
 options.add_argument("user-agent= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_6) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.698.0 Safari/534.24'")
@@ -177,9 +177,11 @@ def check_for_sure_bets(*args):
         #     PROXY_COUNTER = 0
         # PROXY = proxies[PROXY_COUNTER].get_address()
         #print("Proxy address = ******************************** %s ************************************ %d",PROXY,k)
-        
-        driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install())) #, executable_path=DRIVER_PATH)
-
+        try:
+            driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install())) #, executable_path=DRIVER_PATH)
+        except Exception as e:
+            print(f"Error in driver creation...retrying... -- specific error = {e}...")
+            continue
         # webdriver.DesiredCapabilities.CHROME['proxy']={
         #     "httpProxy":PROXY,
         #     "ftpProxy":PROXY,
@@ -187,8 +189,7 @@ def check_for_sure_bets(*args):
         #     "proxyType":"MANUAL",
         # }
         # PROXY_COUNTER += random.randint(1,RAND_PROXY_JUMP)
-        # k += 1
-        
+
         #endtime_file = time.time()
         #print('time to get to parsing was = ' + str(endtime_file - strtime_file))
         #print('Click on the "esc" key @ any time to terminate this program and can then restart again any time you wish :) ......')
@@ -646,19 +647,20 @@ def parseSites(driver): #, input_sports, input_competitions ):
     piwi_betfair_Basketball_link = "https://exch.piwi247.com/customer/sport/7522"
 
     #create a dictionary of all the 2023/24 NBA teams with the value being a potential shortened name for the team but the value being the actual full name in lower case letters:
-    nba_teams_dict = {'Atlanta Hawks':'atlanta hawks','Boston Celtics':'boston celtics','Brooklyn Nets':'brooklyn nets','Charlotte Hornets':'charlotte hornets','Chicago Bulls':'chicago bulls','Cleveland Cavaliers':'cleveland cavaliers','Dallas Mavericks':'dallas mavericks','Denver Nuggets':'denver nuggets','Detroit Pistons':'detroit pistons','Golden State Warriors':'golden state warriors','Houston Rockets':'houston rockets','Indiana Pacers':'indiana pacers','Los Angeles Clippers':'los angeles clippers','Los Angeles Lakers':'los angeles lakers','Memphis Grizzlies':'memphis grizzlies','Miami Heat':'miami heat','Milwaukee Bucks':'milwaukee bucks','Minnesota Timberwolves':'minnesota timberwolves','New Orleans Pelicans':'new orleans pelicans','New York Knicks':'new york knicks','Oklahoma City Thunder':'oklahoma city thunder','Orlando Magic':'orlando magic','Philadelphia 76ers':'philadelphia 76ers','Phoenix Suns':'phoenix suns','Portland Trail Blazers':'portland trail blazers','Sacramento Kings':'sacramento kings','San Antonio Spurs':'san antonio spurs','Toronto Raptors':'toronto raptors','Utah Jazz':'utah jazz','Washington Wizards':'washington wizards'}
+    nba_teams_dict = {'Atlanta Hawks':'atlanta hawks','Boston Celtics':'boston celtics','Brooklyn Nets':'brooklyn nets','Charlotte Hornets':'charlotte hornets','Chicago Bulls':'chicago bulls', 'Cleveland Cavaliers':'cleveland cavaliers','Dallas Mavericks':'dallas mavericks','Denver Nuggets':'denver nuggets','Detroit Pistons':'detroit pistons','Golden State Warriors':'golden state warriors','Houston Rockets':'houston rockets','Indiana Pacers':'indiana pacers','Los Angeles Clippers':'los angeles clippers','Los Angeles Lakers':'los angeles lakers','Memphis Grizzlies':'memphis grizzlies','Miami Heat':'miami heat','Milwaukee Bucks':'milwaukee bucks','Minnesota Timberwolves':'minnesota timberwolves','New Orleans Pelicans':'new orleans pelicans','New York Knicks':'new york knicks','Oklahoma City Thunder':'oklahoma city thunder','Orlando Magic':'orlando magic','Philadelphia 76ers':'philadelphia 76ers','Phoenix Suns':'phoenix suns','Portland Trail Blazers':'portland trail blazers','Sacramento Kings':'sacramento kings','San Antonio Spurs':'san antonio spurs','Toronto Raptors':'toronto raptors','Utah Jazz':'utah jazz','Washington Wizards':'washington wizards','washington wiz.':'washington wizards'}
 
     #expand this dictionary to include the shortened names (for eg. "NY Knicks" : "new york knicks" or 'Golden State':'golden state warriors') of the teams as the keys but with the same values:
     nba_teams_dict.update({'atlanta hawks':'atlanta hawks','boston celtics':'boston celtics','brooklyn nets':'brooklyn nets','charlotte hornets':'charlotte hornets','chicago bulls':'chicago bulls','cleveland cavaliers':'cleveland cavaliers','dallas mavericks':'dallas mavericks','denver nuggets':'denver nuggets','detroit pistons':'detroit pistons','golden state warriors':'golden state warriors','houston rockets':'houston rockets','indiana pacers':'indiana pacers','los angeles clippers':'los angeles clippers', 'los angeles lakers':'los angeles lakers', 'LA  lakers':'los angeles lakers', 'memphis grizzlies':'memphis grizzlies','miami heat':'miami heat','milwaukee bucks':'milwaukee bucks', 'minnesota timberwolves':'minnesota timberwolves','minnesota timb.':'minnesota timberwolves', 'minnesota timb':'minnesota timberwolves', 'new orleans pelicans':'new orleans pelicans','new york knicks':'new york knicks', 'NY knicks':'new york knicks', 'ny knicks':'new york knicks', 'oklahoma city thunder':'oklahoma city thunder','orlando magic':'orlando magic','philadelphia 76ers':'philadelphia 76ers','phoenix suns':'phoenix suns','portland trail blazers':'portland trail blazers','sacramento kings':'sacramento kings','san antonio spurs':'san antonio spurs','toronto raptors':'toronto raptors','utah jazz':'utah jazz','washington wizards':'washington wizards'})
 
-    #update this dictionary to include other potential namings of the teams as the keys but with the same values, for example "NY Knicks" : "new york knicks", "LA raiders" : "Los Angeles Raiders" :
-    nba_teams_dict.update({'atlanta':'atlanta hawks','boston':'boston celtics','brooklyn':'brooklyn nets','charlotte':'charlotte hornets','chicago':'chicago bulls','cleveland':'cleveland cavaliers','dallas':'dallas mavericks','denver':'denver nuggets','detroit':'detroit pistons','golden state':'golden state warriors','houston':'houston rockets','indiana':'indiana pacers','los angeles':'los angeles lakers','memphis':'memphis grizzlies','miami':'miami heat','milwaukee':'milwaukee bucks','minnesota':'minnesota timberwolves','new orleans':'new orleans pelicans','new york':'new york knicks','oklahoma':'oklahoma city thunder','orlando':'orlando magic','philadelphia':'philadelphia 76ers','phoenix':'phoenix suns','portland':'portland trail blazers','sacramento':'sacramento kings','san antonio':'san antonio spurs','toronto':'toronto raptors','utah':'utah jazz','washington':'washington wizards'})
+    #update this dictionary to include other potential namings of the teams as the keys but with the same values, for example "NY Knicks" : "new york knicks", "LA raiders" : "Los Angeles Raiders" : .... i want to type a forward slash character but dont have ritht keyboard . will comment out next line using 2 forwad slashes and one back slashe
+ 
+    nba_teams_dict.update({'atlanta':'atlanta hawks','boston':'boston celtics','brooklyn':'brooklyn nets','charlotte':'charlotte hornets','chicago':'chicago bulls','cleveland':'cleveland cavaliers','dallas':'dallas mavericks','denver':'denver nuggets','detroit':'detroit pistons','golden state':'golden state warriors','houston':'houston rockets','indiana':'indiana pacers','los angeles':'los angeles lakers','memphis':'memphis grizzlies','miami':'miami heat','milwaukee':'milwaukee bucks','minnesota':'minnesota timberwolves','new orleans':'new orleans pelicans','new york':'new york knicks','oklahoma':'oklahoma city thunder','orlando':'orlando magic','philadelphia':'philadelphia 76ers','phoenix':'phoenix suns','portland':'portland trail blazers','sacramento':'sacramento kings','san antonio':'san antonio spurs','toronto':'toronto raptors','utah':'utah jazz','washington':'washington wizards', 'la  lakers':'los angeles lakers','la clippers':'los angeles clippers','la lakers':'los angeles lakers'})
 
     combined_leagues_maping = nba_teams_dict
 
     team_names_maping = combined_leagues_maping
-    print('team_names_maping = ' + str(team_names_maping))
-    print('in betclic ' +  league_or_cup_name  + ' pre-match parsing .... \n \n')
+    #print('team_names_maping = ' + str(team_names_maping))
+    #print('in betclic ' +  league_or_cup_name  + ' pre-match parsing .... \n \n')
     
     global date_time 
     try:
@@ -789,8 +791,13 @@ def parseSites(driver): #, input_sports, input_competitions ):
 
                 print("Game info == :" + str(team_A) + " vs. " + str(team_B))
 
-                full_all_bookies_allLeagues_match_data[ 'betclic'  + '_' + 'home' +  '-' + team_A + ':' + team_B ].append(float(odd_home)) #= teamAWinOdds + '_' + draw_odds + '_' + teamBWinOdds
-                full_all_bookies_allLeagues_match_data[ 'betclic'  + '_' + 'away' +  '-' + team_A + ':' + team_B].append(float(odd_away))
+                try:
+
+                    full_all_bookies_allLeagues_match_data[ 'betclic'  + '_' + 'home' +  '-' + team_names_maping[unidecode.unidecode(team_A.lower())] + ':' + team_names_maping[unidecode.unidecode(team_B.lower())]].append(float(odd_home)) #= teamAWinOdds + '_' + draw_odds + '_' + teamBWinOdds
+                    full_all_bookies_allLeagues_match_data[ 'betclic'  + '_' + 'away' +  '-' + team_names_maping[unidecode.unidecode(team_A.lower())] + ':' +  team_names_maping[unidecode.unidecode(team_B.lower())]].append(float(odd_away))
+                except KeyError:
+                    print("Key error in betclic NBA parsing -- skipping this match ....")
+                    continue
 
     except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
         any_errors = False
@@ -902,14 +909,13 @@ def parseSites(driver): #, input_sports, input_competitions ):
                         panel_index = i
                         break
                     else:
-                        print("for the " + str(i) + " th panel -- no NBA panel found in the piwi247 website")
+                        #print("for the " + str(i) + " th panel -- no NBA panel found in the piwi247 website")
                         continue
     if DEBUG_PRINTS:                
         print("PAST  panels search after trying to assign 1st valid  and panel_index  = " + str(panel_index) + ", so now going through valid panels starting with this  ....")
 
     
     driver.execute_script("window.scrollTo(  " + str(0) +  ", "  + str(2) + "*document.body.scrollHeight);")
-
     x = random.randint(1, 3)
     time.sleep(x)
 
@@ -921,8 +927,9 @@ def parseSites(driver): #, input_sports, input_competitions ):
                 #x = random.randint(1, 3)
                 #time.sleep(x)
                 team_names_elment.append(match.find("div", class_="biab_market-title-cell styles_participantsNamesCell__kipAg").text)
-                if DEBUG_PRINTS:
-                    print(f'debug print -- AFTER  getting team_names_elment .... and it =  {team_names_elment[-1]}  ....')
+                
+                #if DEBUG_PRINTS:
+                    #print(f'debug print -- AFTER  getting team_names_elment .... and it =  {team_names_elment[-1]}  ....')
                 #print(team_names_elment[-1])
 
                 if len(team_names_elment) != 0:
@@ -949,8 +956,8 @@ def parseSites(driver): #, input_sports, input_competitions ):
                     print(f'debug print -- at getting team_bets_elment_1   ....')
                 team_bets_elment_1 = match.find("div",class_="styles_betContent__wrapper__25jEo")
 
-                if DEBUG_PRINTS:
-                    print(f'debug print -- AFTER  getting team_bets_elment_1 ....') # and it = {team_bets_elment_1}  ....')
+                # if DEBUG_PRINTS:
+                #     print(f'debug print -- AFTER  getting team_bets_elment_1 ....') # and it = {team_bets_elment_1}  ....')
 
                 #print(team_bets_elment.text)
             except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
@@ -967,8 +974,8 @@ def parseSites(driver): #, input_sports, input_competitions ):
 
                 all_blue_odds = team_bets_elment_1.find_all("div", class_="styles_contents__Kf8LQ")
 
-                if DEBUG_PRINTS and len(all_blue_odds) >= 1:
-                    print(f'debug print -- AFTER getting bluereodds = ->{all_blue_odds[-1].text}<- ....')
+                # if DEBUG_PRINTS and len(all_blue_odds) >= 1:
+                #     print(f'debug print -- AFTER getting bluereodds = ->{all_blue_odds[-1].text}<- ....')
 
             except (StaleElementReferenceException, NoSuchElementException, InvalidSessionIdException) :
                 any_errors = True
@@ -985,6 +992,8 @@ def parseSites(driver): #, input_sports, input_competitions ):
                 time.sleep(2)
                 if all_blue_odds and len(all_blue_odds) >= 3:
                 # take care of the home odd
+                    try_odd_home = -1.0
+                    try_odd_away = -1.0
                     x = random.randint(1, 3)
                     time.sleep(x)
                     blue_odd_split_1 = all_blue_odds[0].text.split('.')
@@ -995,8 +1004,18 @@ def parseSites(driver): #, input_sports, input_competitions ):
                             x = random.randint(1, 3)
                             time.sleep(x)
                             odd_home = float(blue_odd_split_1[0] + '.' + blue_odd_split_1[1][:2])
-                    # if odd_home == -1.0:
-                    #     continue
+                    ## TODO  Must really think about this case !(cant  find good way to try if when odd is an integer 
+                    # to use 1 or two digits and dont have the away odd to do a check as below)
+
+                    # else:
+                    #     # so its an integer no decimal pt. try 1 or 2 digits (if surbet val is > 1 rule it out)
+                    #     if len(all_blue_odds[0].text) >= 2:
+                    #         try_odd_home = float(all_blue_odds[0].text[:2])
+                    #         if ((1/odd_home) + (1/try_odd_home)) > 0.35:
+                    #             odd_home = all_blue_odds[0].text[:1]
+
+                    if odd_home == -1.0:
+                        continue
                     # else:
                     #     print(f'odd_home = {odd_home}')
                     # for the away odd
@@ -1011,8 +1030,19 @@ def parseSites(driver): #, input_sports, input_competitions ):
                             time.sleep(x)
                             odd_away = float(blue_odd_split_2[0] + '.' + blue_odd_split_2[1][:2])
                         time.sleep(1)
-                    # if odd_away == -1.0:
-                    #     continue
+                    else:
+                        # so its an integer no decimal pt. try 1 or 2 digits (if surbet val is > 1 rule it out)
+                        blue_away_odd_txt =  all_blue_odds[2].text
+                        if len(blue_away_odd_txt) >= 2:
+                            try_odd_away = float(blue_away_odd_txt[:2])
+                            if ((1/odd_home) + (1/try_odd_away)) < 0.65:
+                                odd_away = int(blue_away_odd_txt[:1])
+                            else:
+                                odd_away = int(blue_away_odd_txt[:2])
+
+
+                    if odd_away == -1.0:
+                        continue
                     # else:
                     #     print(f'odd_away_home = {odd_away}')                    
 
@@ -1037,8 +1067,8 @@ def parseSites(driver): #, input_sports, input_competitions ):
                     print('Error - no team names found in the piwi247 website')
                     continue
 
-            except IndexError:
-                print('Error - index error in creating and inserting into the overall main dict. !! ')
+            except (IndexError,KeyError):
+                print('Error - index or Key error in creating and inserting into the overall main dict. !! ')
                 continue
 
     if DEBUG_PRINTS:
@@ -1055,7 +1085,7 @@ def parseSites(driver): #, input_sports, input_competitions ):
     full_all_bookies_allLeagues_match_data_copy = copy.deepcopy(full_all_bookies_allLeagues_match_data)            
     betclic_home_odds,betclic_away_odds = -1.0, -1.0
     betclic_home_team, betclic_away_team = 'shite_utd', "crap_rovers"
-    betclic__odds = -1.0
+    betclic_odds = -1.0
     betclic_home_switch = False
     date = str(datetime.datetime.today()).split()[0]
     for key_, val_ in full_all_bookies_allLeagues_match_data.items():
@@ -1073,7 +1103,8 @@ def parseSites(driver): #, input_sports, input_competitions ):
             else:
                 betclic_odds = val_[0] 
         else:
-            continue        
+            continue
+
         
         home_away_str = home_away_fullstr[:4]
 
@@ -1085,7 +1116,7 @@ def parseSites(driver): #, input_sports, input_competitions ):
                 piwi_home_away_str = piwi_home_away_fullstr[:4]
 
                 if ( betclic_home_team in piwi_teams_str.lower()  and betclic_away_team in piwi_teams_str.lower()) and home_away_str != piwi_home_away_str:
-
+                    print(f'Checking match {piwi_teams_str} with betclic odds = {betclic_odds} for a {home_away_str} win and piwi odds = {piwi_vals[-1]} for opposing team... :)' )
                     #print(f'in 1st 2 bookie odds email check...')
                     bookie_1 = 'Betclic'
                     bookie_2 = 'Piwi247'
@@ -1093,6 +1124,9 @@ def parseSites(driver): #, input_sports, input_competitions ):
                     teamA_1 = betclic_home_team 
                     teamB_1 = betclic_away_team
                     piwi_odd = piwi_vals[-1]
+
+                    if piwi_odd == -1.0:
+                        continue
                     if betclic_home_switch:
                         away_win_odds = piwi_vals[-1]
                         home_win_odds = betclic_odds
@@ -1100,6 +1134,7 @@ def parseSites(driver): #, input_sports, input_competitions ):
                         away_win_odds = betclic_odds
                         home_win_odds = piwi_vals[-1]
 
+                    
                     if  check_is_surebet(betclic_odds, piwi_vals[-1]):
                         #print(f'in checking surebet ...')
 
